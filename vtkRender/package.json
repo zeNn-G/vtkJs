@@ -1,15 +1,15 @@
 {
   "name": "vtkrender",
   "version": "1.0.0",
+  "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "webpack --progress --mode=development",
-    "start": "webpack serve --progress --mode=development --static=dist",
+	"build": "webpack --progress --mode=development",
+	"start": "webpack serve --progress --mode=development --static=dist",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
-  "description": "",
   "dependencies": {
     "@kitware/vtk.js": "^25.6.0"
   },
