@@ -94,13 +94,13 @@ document.querySelector(".fileUpload").addEventListener("input", (e) => {
 });
 
 const url = "http://localhost:3000/upload";
-const fileUrl = "";
+var fileUrl = "";
 
 async function getUrl(url) {
   const response = await fetch(url);
 
   const data = response.json();
-
+	console.log(response);
   console.log(data);
 
   if (response) {
@@ -164,6 +164,9 @@ async function getUrl(url) {
     });
   });
 }
+
+// call async getUrl function
+getUrl(url);
 
 document.querySelector(".plane1Position").addEventListener("input", (e) => {
   clipPlane1Position = Number(e.target.value);
