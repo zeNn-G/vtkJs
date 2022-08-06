@@ -15,6 +15,8 @@ const app = express();
 
 const upload = multer({ storage: storage });
 
+
+
 // cors Policy setting
 app.use(function (req, res, next) {
 	res.setHeader('Access-Control-Allow-Origin', 'http://localhost:8081');
@@ -28,9 +30,10 @@ app.get("/", (req, res) => {
   res.sendFile(__dirname + "/index.html");
 });
 
-const pathArr = [];
+var pathArr = [];
 
 app.post("/upload", upload.single("vtk"), (req, res) => {
+	pathArr = [];
   pathArr.push(req.file.path);
 
   res.send({
@@ -39,9 +42,20 @@ app.post("/upload", upload.single("vtk"), (req, res) => {
 });
 
 app.get("/upload", (req, res) => {
-  res.send({
-    path: pathArr[0],
-  });
+	console.log('single file');
+
+   
+	
+	console.log(pathArr[0]);
+
+    // Download function provided by express
+    res.download(__dirname + '/'+ pathArr[0], function(err) {
+        if(err) {
+            console.log(err);
+        }
+    })
+
+
 });
 
 app.get("/download", (req, res) => {

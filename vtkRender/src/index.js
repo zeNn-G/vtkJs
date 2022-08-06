@@ -17,6 +17,7 @@ import vtkVolumeMapper from "@kitware/vtk.js/Rendering/Core/VolumeMapper";
 import vtkPlane from "@kitware/vtk.js/Common/DataModel/Plane";
 import vtkMatrixBuilder from "@kitware/vtk.js/Common/Core/MatrixBuilder";
 
+
 // controlPanel from './controlPanel.html';
 const controlPanel =
   '<table> <tbody><tr> <td><b>Clip Plane 1</b></td> </tr><tr> <td> Position <input class="plane1Position" type="range" min="-201.60000000000002" max="201.60000000000002" step="1" value="50.400000000000006"> </td> <td> Rotation <input class="plane1Rotation" type="range" min="0" max="180" step="1" value="0"> </td> </tr>  <tr> <td><b>Clip Plane 2</b></td> </tr><tr> <td> Position <input class="plane2Position" type="range" min="-201.60000000000002" max="201.60000000000002" step="1" value="100.80000000000001"> </td> <td> Rotation <input class="plane2Rotation" type="range" min="0" max="180" step="1" value="0"> </td> </tr>  </tbody></table>';
@@ -96,77 +97,80 @@ document.querySelector(".fileUpload").addEventListener("input", (e) => {
 const url = "http://localhost:3000/upload";
 var fileUrl = "";
 
-async function getUrl(url) {
-  const response = await fetch(url);
-
-  const data = response.json();
-	console.log(response);
-  console.log(data);
-
-  if (response) {
-    fileUrl = data.path;
-  }
-
-  reader.setUrl(fileUrl).then(() => {
-    reader.loadData().then(() => {
-      const data = reader.getOutputData();
-      const extent = data.getExtent();
-      const spacing = data.getSpacing();
-      const sizeX = extent[1] * spacing[0];
-      const sizeY = extent[3] * spacing[1];
-
-      clipPlane1Position = sizeX / 4;
-      clipPlane2Position = sizeY / 2;
-      const clipPlane1Origin = [
-        clipPlane1Position * clipPlane1Normal[0],
-        clipPlane1Position * clipPlane1Normal[1],
-        clipPlane1Position * clipPlane1Normal[2],
-      ];
-      const clipPlane2Origin = [
-        clipPlane2Position * clipPlane2Normal[0],
-        clipPlane2Position * clipPlane2Normal[1],
-        clipPlane2Position * clipPlane2Normal[2],
-      ];
-
-      clipPlane1.setNormal(clipPlane1Normal);
-      clipPlane1.setOrigin(clipPlane1Origin);
-      clipPlane2.setNormal(clipPlane2Normal);
-      clipPlane2.setOrigin(clipPlane2Origin);
-      mapper.addClippingPlane(clipPlane1);
-      mapper.addClippingPlane(clipPlane2);
-
-      renderer.addVolume(actor);
-      const interactor = renderWindow.getInteractor();
-      interactor.setDesiredUpdateRate(15.0);
-      renderer.resetCamera();
-      renderer.getActiveCamera().elevation(70);
-      renderWindow.render();
-
-      let el = document.querySelector(".plane1Position");
-      el.setAttribute("min", -sizeX);
-      el.setAttribute("max", sizeX);
-      el.setAttribute("value", clipPlane1Position);
-
-      el = document.querySelector(".plane2Position");
-      el.setAttribute("min", -sizeY);
-      el.setAttribute("max", sizeY);
-      el.setAttribute("value", clipPlane2Position);
-
-      el = document.querySelector(".plane1Rotation");
-      el.setAttribute("min", 0);
-      el.setAttribute("max", 180);
-      el.setAttribute("value", clipPlane1RotationAngle);
-
-      el = document.querySelector(".plane2Rotation");
-      el.setAttribute("min", 0);
-      el.setAttribute("max", 180);
-      el.setAttribute("value", clipPlane2RotationAngle);
-    });
-  });
+// get request  for vtk file in the server.
+const xhr = new XMLHttpRequest();
+xhr.open("GET",url);
+xhr.send();
+xhr.onload = () => {
+	console.log(xhr.response);
+	// setUrl nin içindeki şey consolda hata veriyor. 
+	reader.setUrl(xhr.response).then(() => {
+		reader.loadData().then(() => {
+		  const data = reader.getOutputData();
+		  const extent = data.getExtent();
+		  const spacing = data.getSpacing();
+		  const sizeX = extent[1] * spacing[0];
+		  const sizeY = extent[3] * spacing[1];
+	
+		  clipPlane1Position = sizeX / 4;
+		  clipPlane2Position = sizeY / 2;
+		  const clipPlane1Origin = [
+			clipPlane1Position * clipPlane1Normal[0],
+			clipPlane1Position * clipPlane1Normal[1],
+			clipPlane1Position * clipPlane1Normal[2],
+		  ];
+		  const clipPlane2Origin = [
+			clipPlane2Position * clipPlane2Normal[0],
+			clipPlane2Position * clipPlane2Normal[1],
+			clipPlane2Position * clipPlane2Normal[2],
+		  ];
+	
+		  clipPlane1.setNormal(clipPlane1Normal);
+		  clipPlane1.setOrigin(clipPlane1Origin);
+		  clipPlane2.setNormal(clipPlane2Normal);
+		  clipPlane2.setOrigin(clipPlane2Origin);
+		  mapper.addClippingPlane(clipPlane1);
+		  mapper.addClippingPlane(clipPlane2);
+	
+		  renderer.addVolume(actor);
+		  const interactor = renderWindow.getInteractor();
+		  interactor.setDesiredUpdateRate(15.0);
+		  renderer.resetCamera();
+		  renderer.getActiveCamera().elevation(70);
+		  renderWindow.render();
+	
+		  let el = document.querySelector(".plane1Position");
+		  el.setAttribute("min", -sizeX);
+		  el.setAttribute("max", sizeX);
+		  el.setAttribute("value", clipPlane1Position);
+	
+		  el = document.querySelector(".plane2Position");
+		  el.setAttribute("min", -sizeY);
+		  el.setAttribute("max", sizeY);
+		  el.setAttribute("value", clipPlane2Position);
+	
+		  el = document.querySelector(".plane1Rotation");
+		  el.setAttribute("min", 0);
+		  el.setAttribute("max", 180);
+		  el.setAttribute("value", clipPlane1RotationAngle);
+	
+		  el = document.querySelector(".plane2Rotation");
+		  el.setAttribute("min", 0);
+		  el.setAttribute("max", 180);
+		  el.setAttribute("value", clipPlane2RotationAngle);
+		});
+	  });
+	 
 }
 
-// call async getUrl function
-getUrl(url);
+
+
+  
+
+ 
+
+
+
 
 document.querySelector(".plane1Position").addEventListener("input", (e) => {
   clipPlane1Position = Number(e.target.value);
