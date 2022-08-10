@@ -1,7 +1,7 @@
 const express = require("express");
 const multer = require("multer");
 const path = require("path");
-var fileSystem = require('fs');
+var fileSystem = require("fs");
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "./Images");
@@ -15,16 +15,20 @@ const app = express();
 
 const upload = multer({ storage: storage });
 
-
-
 // cors Policy setting
 app.use(function (req, res, next) {
-	res.setHeader('Access-Control-Allow-Origin', 'http://localhost:8081');
-	res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-	res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
-	res.setHeader('Access-Control-Allow-Credentials', true);
-	next();
-	})
+  res.setHeader("Access-Control-Allow-Origin", "http://localhost:8081");
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET, POST, OPTIONS, PUT, PATCH, DELETE"
+  );
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "X-Requested-With,content-type"
+  );
+  res.setHeader("Access-Control-Allow-Credentials", true);
+  next();
+});
 
 app.get("/", (req, res) => {
   res.sendFile(__dirname + "/index.html");
@@ -33,7 +37,7 @@ app.get("/", (req, res) => {
 var pathArr = [];
 
 app.post("/upload", upload.single("vtk"), (req, res) => {
-	pathArr = [];
+  pathArr = [];
   pathArr.push(req.file.path);
 
   res.send({
@@ -42,30 +46,26 @@ app.post("/upload", upload.single("vtk"), (req, res) => {
 });
 
 app.get("/upload", (req, res) => {
-	console.log('single file');
-//
-var filePath = path.join(__dirname, pathArr[0]);
-     var stat = fileSystem.statSync(filePath);
-     res.writeHead(200);
-     var readStream = fileSystem.createReadStream(filePath);
-     // We replaced all the event handlers with a simple call to readStream.pipe()
-     readStream.pipe(res);
+  console.log("single file");
+  //
+  var filePath = path.join(__dirname, pathArr[0]);
+  var stat = fileSystem.statSync(filePath);
+  res.writeHead(200);
+  var readStream = fileSystem.createReadStream(filePath);
+  // We replaced all the event handlers with a simple call to readStream.pipe()
+  readStream.pipe(res);
 
+  //
 
+  console.log(pathArr[0]);
 
-//
-   
-	
-	console.log(pathArr[0]);
-
-    /*// Download function provided by express
+  /*// Download function provided by express
     res.download(__dirname + '/'+ pathArr[0], function(err) {
         if(err) {
             console.log(err);
         }
     })
 */
-
 });
 
 app.get("/download", (req, res) => {
