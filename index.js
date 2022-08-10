@@ -1,7 +1,7 @@
 const express = require("express");
 const multer = require("multer");
 const path = require("path");
-
+var fileSystem = require('fs');
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "./Images");
@@ -43,18 +43,28 @@ app.post("/upload", upload.single("vtk"), (req, res) => {
 
 app.get("/upload", (req, res) => {
 	console.log('single file');
+//
+var filePath = path.join(__dirname, pathArr[0]);
+     var stat = fileSystem.statSync(filePath);
+     res.writeHead(200);
+     var readStream = fileSystem.createReadStream(filePath);
+     // We replaced all the event handlers with a simple call to readStream.pipe()
+     readStream.pipe(res);
 
+
+
+//
    
 	
 	console.log(pathArr[0]);
 
-    // Download function provided by express
+    /*// Download function provided by express
     res.download(__dirname + '/'+ pathArr[0], function(err) {
         if(err) {
             console.log(err);
         }
     })
-
+*/
 
 });
 
