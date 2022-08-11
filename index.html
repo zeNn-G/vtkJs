@@ -4,12 +4,32 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
     <title>Document</title>
   </head>
   <body>
-    <form action="/upload" method="post" enctype="multipart/form-data">
-      <input type="file" name="vtk" accept=".vtk" />
-      <input type="submit" value="Upload" />
-    </form>
+    <div
+      class="flex w-[100vw] h-[100vh] items-center justify-center bg-blue-300"
+    >
+      <div class="border-2 p-10 flex items-center">
+        <form
+          action="/upload"
+          method="post"
+          enctype="multipart/form-data"
+          id="form-upload"
+        >
+          <input type="file" name="vtk" accept=".vtk" />
+          <!-- <input type="submit" value="Upload" class="cursor-pointer bg-red-300" /> -->
+        </form>
+        <button
+          type="submit"
+          form="form-upload"
+          value="submit"
+          class="border-2 rounded-lg p-2 bg-red-300"
+        >
+          Upload
+        </button>
+      </div>
+    </div>
   </body>
 </html>
